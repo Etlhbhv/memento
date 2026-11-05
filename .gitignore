@@ -1,0 +1,8 @@
+node_modules/
+dist/
+out/
+.memento/cache/
+memento-results/
+*.log
+.DS_Store
+.env

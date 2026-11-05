@@ -1,0 +1,34 @@
+{
+  "name": "@memento/core",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "^4.0.97",
+    "@ai-sdk/google": "^4.0.112",
+    "@ai-sdk/openai": "^4.0.109",
+    "@ai-sdk/openai-compatible": "^3.0.85",
+    "ai": "^7.0.163",
+    "playwright": "1.63.0",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
+  }
+}

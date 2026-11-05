@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head><title>Acme Shop</title>
+<style>
+  body { font-family: sans-serif; }
+  .hidden { display: none; }
+  #banner { position: fixed; bottom: 0; left: 0; right: 0; background: #eee; padding: 20px; }
+  .fancy-check input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+</style></head>
+<body>
+  <div id="banner" role="dialog" aria-label="Cookie consent">We use cookies. <button id="accept">Accept all</button></div>
+  <section id="login">
+    <h1>Sign in</h1>
+    <form id="f">
+      <label for="email">Email</label><input id="email" name="email" type="email" placeholder="you@example.com">
+      <label for="pw">Password</label><input id="pw" name="password" type="password">
+      <label class="fancy-check"><input type="checkbox" id="remember"> Remember me</label>
+      <button type="submit" class="btn-x7f3a9c2">Sign in</button>
+    </form>
+    <p id="err" class="hidden" role="alert">Invalid password</p>
+  </section>
+  <section id="dash" class="hidden">
+    <h1>Welcome, <span id="who"></span></h1>
+    <ul id="items">
+      <li>Gravity Blanket <button data-testid="add-1">Add to cart</button></li>
+      <li>Weighted Pillow <button data-testid="add-2">Add to cart</button></li>
+    </ul>
+    <p>Cart: <span id="count">0</span> items</p>
+    <select id="sort" aria-label="Sort by"><option>Featured</option><option>Price: low to high</option></select>
+  </section>
+<script>
+  document.getElementById('accept').onclick = () => document.getElementById('banner').remove();
+  document.getElementById('f').onsubmit = (e) => {
+    e.preventDefault();
+    setTimeout(() => {
+      if (document.getElementById('pw').value !== 'secret') { document.getElementById('err').classList.remove('hidden'); return; }
+      document.getElementById('login').classList.add('hidden');
+      document.getElementById('dash').classList.remove('hidden');
+      document.getElementById('who').textContent = document.getElementById('email').value;
+    }, 300);
+  };
+  document.querySelectorAll('#items button').forEach(b => b.onclick = () => {
+    const c = document.getElementById('count'); c.textContent = String(Number(c.textContent) + 1);
+  });
+</script>
+</body></html>
