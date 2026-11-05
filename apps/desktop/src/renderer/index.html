@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:" />
+  <title>Memento</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Memento</div>
+    <div id="projectPath" class="muted">No project open</div>
+    <div class="spacer"></div>
+    <label class="check"><input type="checkbox" id="headed" /> Show browser</label>
+    <label class="check"><input type="checkbox" id="noCache" /> Ignore cache</label>
+    <button id="openProject">Open project…</button>
+    <button id="settingsBtn" disabled>AI settings</button>
+    <button id="runAll" class="primary" disabled>Run all</button>
+    <button id="stopRun" class="danger" hidden>Stop</button>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <div class="section-title">Tests <button id="newTest" class="small" disabled>+ New</button></div>
+      <ul id="testList" class="test-list"></ul>
+    </aside>
+
+    <section class="editor-pane">
+      <div class="editor-head">
+        <span id="editorFile" class="muted">Select a test</span>
+        <div class="spacer"></div>
+        <span id="validation" class="muted"></span>
+        <button id="saveTest" disabled>Save</button>
+        <button id="runTest" class="primary" disabled>Run test</button>
+      </div>
+      <textarea id="editor" spellcheck="false" disabled placeholder="Open a project and pick a test."></textarea>
+    </section>
+
+    <section class="run-pane">
+      <div class="section-title">Run</div>
+      <div id="runOutput" class="run-output"><p class="muted">Results appear here while tests run.</p></div>
+    </section>
+  </main>
+
+  <dialog id="settings">
+    <form method="dialog" id="settingsForm">
+      <h2>AI settings</h2>
+      <p class="muted">Bring your own models. Settings are saved to <code>memento.config.yaml</code>; API keys are stored in your OS keychain and never written to the project.</p>
+
+      <h3>Providers</h3>
+      <div id="providers"></div>
+      <button type="button" id="addProvider" class="small">+ Add provider</button>
+
+      <h3>Models per agent</h3>
+      <p class="muted">Format <code>provider:model</code>. Comma-separate to fall back in order.</p>
+      <div id="models" class="grid2"></div>
+
+      <h3>Options</h3>
+      <label class="check"><input type="checkbox" id="vision" /> Send screenshots (vision)</label>
+      <label class="check"><input type="checkbox" id="failureRecovery" /> Recover from transient obstructions</label>
+
+      <div class="dialog-actions">
+        <button value="cancel">Cancel</button>
+        <button id="saveSettings" value="default" class="primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <template id="providerTpl">
+    <div class="provider">
+      <input class="p-name" placeholder="name (e.g. anthropic)" />
+      <select class="p-type">
+        <option value="anthropic">Anthropic</option>
+        <option value="openai">OpenAI</option>
+        <option value="google">Google</option>
+        <option value="openai-compatible">OpenAI-compatible (Ollama, LM Studio, OpenRouter…)</option>
+      </select>
+      <input class="p-base" placeholder="base URL (optional)" />
+      <input class="p-keyvar" placeholder="key env var, e.g. ANTHROPIC_API_KEY" />
+      <input class="p-key" type="password" placeholder="paste key to store in keychain" />
+      <label class="check"><input type="checkbox" class="p-vision" checked /> vision</label>
+      <button type="button" class="small p-remove">✕</button>
+    </div>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>

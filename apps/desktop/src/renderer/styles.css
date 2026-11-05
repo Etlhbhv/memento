@@ -1,0 +1,56 @@
+:root {
+  --bg: #0f1115; --panel: #161922; --line: #262b38; --text: #e6e8ee; --muted: #8a91a5;
+  --accent: #7c5cff; --ok: #3fb950; --bad: #f85149; --warn: #d29922;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 13px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; }
+code, textarea, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+button { background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+button:hover:not(:disabled) { border-color: var(--accent); }
+button:disabled { opacity: .45; cursor: default; }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button.danger { background: var(--bad); border-color: var(--bad); color: #fff; }
+button.small { padding: 2px 8px; font-size: 12px; }
+input, select { background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; }
+.muted { color: var(--muted); }
+.spacer { flex: 1; }
+.check { display: inline-flex; gap: 6px; align-items: center; color: var(--muted); }
+
+.topbar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--panel); }
+.brand { font-weight: 700; letter-spacing: .5px; }
+.layout { flex: 1; display: grid; grid-template-columns: 260px 1fr 420px; min-height: 0; }
+.sidebar, .run-pane { border-right: 1px solid var(--line); overflow: auto; }
+.run-pane { border-right: 0; border-left: 1px solid var(--line); }
+.section-title { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; font-size: 11px; letter-spacing: .6px; }
+
+.test-list { list-style: none; margin: 0; padding: 0 6px; }
+.test-list li { padding: 8px; border-radius: 6px; cursor: pointer; display: flex; gap: 8px; align-items: center; }
+.test-list li:hover, .test-list li.active { background: #1f2330; }
+.test-list .file { color: var(--muted); font-size: 11px; display: block; }
+
+.editor-pane { display: flex; flex-direction: column; min-width: 0; }
+.editor-head { display: flex; gap: 8px; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+#editor { flex: 1; resize: none; background: var(--bg); color: var(--text); border: 0; padding: 14px; font-size: 13px; line-height: 1.5; outline: none; tab-size: 2; }
+#validation.bad { color: var(--bad); }
+#validation.ok { color: var(--ok); }
+
+.run-output { padding: 0 12px 20px; }
+.run-test { border: 1px solid var(--line); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+.run-test-head { display: flex; gap: 8px; align-items: center; padding: 8px 10px; background: var(--panel); }
+.run-steps { list-style: none; margin: 0; padding: 6px 10px; }
+.run-steps li { padding: 3px 0; display: flex; gap: 6px; align-items: baseline; }
+.run-steps .err { color: var(--bad); white-space: pre-wrap; font-size: 12px; margin: 2px 0 4px 20px; }
+.tag { font-size: 10px; padding: 1px 5px; border-radius: 4px; border: 1px solid var(--line); color: var(--muted); }
+.tag.healed { color: var(--warn); border-color: var(--warn); }
+.tag.ai { color: var(--accent); border-color: var(--accent); }
+.st-passed { color: var(--ok); } .st-failed { color: var(--bad); } .st-running { color: var(--warn); } .st-skipped, .st-softFailed { color: var(--muted); }
+
+dialog { background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 10px; width: min(900px, 92vw); padding: 20px 24px; }
+dialog::backdrop { background: rgba(0,0,0,.55); }
+dialog h3 { margin: 18px 0 8px; font-size: 13px; }
+.provider { display: grid; grid-template-columns: 110px 150px repeat(3, minmax(0, 1fr)) auto auto; gap: 6px; margin-bottom: 6px; align-items: center; }
+.provider input:not([type=checkbox]), .provider select { min-width: 0; width: 100%; }
+dialog { overflow-x: hidden; }
+.grid2 { display: grid; grid-template-columns: 100px 1fr; gap: 6px 10px; align-items: center; }
+.dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }

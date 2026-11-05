@@ -1,0 +1,22 @@
+{
+  "name": "@memento/desktop",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && cp -r src/renderer dist/",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "pnpm build && electron ."
+  },
+  "dependencies": {
+    "@memento/core": "workspace:*",
+    "playwright": "1.63.0",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "electron": "45.2.3",
+    "typescript": "^7.0.2"
+  }
+}
