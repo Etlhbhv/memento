@@ -48,15 +48,18 @@ Memento-specific features on top. ✅ done · 🟡 partial · ⬜ not started.
 
 | Feature | Status | Notes |
 | - | - | - |
-| CLI: init, run, list, doctor, trace | ✅ | |
+| CLI: init, run, list, doctor, trace, ui | ✅ | |
 | Parallel workers, retries, labels, environments | ✅ | sharding ⬜ |
 | Playwright traces, screenshots on failure, video | ✅ | |
-| JUnit / Allure reports | ⬜ | JSON summary today |
+| JUnit / Markdown reports | ✅ | Allure ⬜ |
 | MCP server for coding agents | ⬜ | |
 | Coding-agent skills | ⬜ | |
 | Import from Playwright / Cypress / Selenium | ⬜ | Momentic YAML already loads |
-| Desktop app: projects, editor, runs, AI settings, keychain | ✅ | |
-| Desktop: visual recorder, step-by-step debugger | ⬜ | |
-| Desktop: packaging/signing (dmg, exe) | ⬜ | electron-builder |
+| Local web app (`memento ui`): projects, editor, live runs, history, AI settings | ✅ | token-protected, 127.0.0.1 only |
+| GitHub: connect, clone repos, AI writes tests from code | ✅ | |
+| GitHub: commit tests + open PR, PR workflow with results comment | ✅ | |
+| Publish CLI to npm (`npm i -g memento`) | ⬜ | workflow currently builds from source |
+| Visual recorder, step-by-step debugger | ⬜ | |
+| Hosted version (accounts, team dashboard, cloud runners) | ⬜ | same UI, remote runner protocol |
 | Autonomous explorer ("Mo"-style) | ⬜ | |
 | Cloud runners (paid) | ⬜ | `Runner` already takes injectable browser/AI backends |

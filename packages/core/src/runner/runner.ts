@@ -97,6 +97,22 @@ export class Runner extends EventEmitter<RunnerEvents> {
     return tests;
   }
 
+  /** Like `discover`, but reports files that fail to parse instead of throwing. */
+  discoverWithErrors(): Array<{ id: string; filePath: string; description?: string; labels?: string[]; steps: number; error?: string }> {
+    const out: Array<{ id: string; filePath: string; description?: string; labels?: string[]; steps: number; error?: string }> = [];
+    for (const f of [...walk(this.cfg.rootDir)].sort()) {
+      const rel = relative(this.cfg.rootDir, f);
+      if (!matchesAny(rel, this.cfg.include) || matchesAny(rel, this.cfg.exclude)) continue;
+      try {
+        const t = parseFile(f);
+        if (t.kind === "test") out.push({ id: t.id, filePath: f, description: t.description, labels: t.labels, steps: t.steps.length });
+      } catch (e) {
+        out.push({ id: rel.split("/").pop()!.replace(/\.test\.ya?ml$/, ""), filePath: f, steps: 0, error: (e as Error).message });
+      }
+    }
+    return out;
+  }
+
   async run(opts: RunOptions = {}): Promise<RunSummary> {
     const tests = this.discover(opts);
     const runId = new Date().toISOString().replace(/[:.]/g, "-");

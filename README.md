@@ -10,7 +10,7 @@ descriptions, AI actions reach goals on their own, and everything AI resolves
 is cached so green runs are fast and deterministic — but it is open source,
 runs on your machine, and lets you plug in your own AI and infrastructure.
 
-![Memento desktop app](docs/images/desktop-run.png)
+![Memento web app](docs/images/web-tests.png)
 
 ## What a test looks like
 
@@ -50,37 +50,61 @@ Mix three kinds of steps freely:
 Plus `if`/`else`, `while`, `retries`, soft assertions, variables and `{{ }}`
 templating. Momentic `momentic/test/v2` YAML files load as-is.
 
-## Quick start (CLI)
+## Quick start
+
+Memento is a local web app plus a CLI. The website runs on your computer
+(`127.0.0.1`), and tests run in real browsers on your computer.
 
 ```bash
-pnpm install
-pnpm build
+git clone https://github.com/Etlhbhv/memento.git && cd memento
+pnpm install && pnpm build
 ```
 
 ```bash
-cd your-app
-node /path/to/memento/packages/cli/dist/bin.js init
+npx playwright install chromium
 ```
 
 ```bash
-export ANTHROPIC_API_KEY=sk-ant-...
-node /path/to/memento/packages/cli/dist/bin.js run
+node packages/cli/dist/bin.js ui
 ```
 
-`memento doctor` checks your config, browser and every configured model.
-`memento trace <path>/trace.zip` opens the Playwright time-travel trace of a
-failed test.
+This opens the app in your browser. From there:
 
-## Desktop app
+1. **Open a project**: pick a folder, or connect GitHub and pick a repository
+   (it's cloned to `~/.memento/repos`).
+2. **Settings → AI models**: add a provider (Anthropic, OpenAI, Gemini,
+   OpenRouter, Ollama, LM Studio…) and paste your key. Keys stay in
+   `~/.memento/credentials.json` on your machine, never in the project.
+3. **Write with AI**: Memento reads the code and drafts tests. Save them, or
+   open a pull request, optionally with a workflow that runs the tests on
+   every PR and comments the results.
+4. **Tests**: edit, run, and watch each step live. **Runs** keeps history,
+   screenshots and Playwright traces.
+
+To use `memento` as a command anywhere: `cd packages/cli && pnpm link --global`.
+
+### CLI
 
 ```bash
-pnpm build
-pnpm desktop
+memento run                      # run all tests
+memento run memento/login.test.yaml --headed
+memento run --summary-md summary.md --junit junit.xml   # CI reports
+memento doctor                   # check config, browser and every model
+memento trace <path/to/trace.zip>
 ```
 
-Open a project folder, edit tests with live validation, run them with live
-step-by-step results, and configure AI providers. API keys are stored in the
-OS keychain (macOS Keychain, Windows DPAPI, libsecret) — never in the repo.
+## GitHub
+
+Connect with your GitHub CLI login (`gh auth login`) or a fine-grained token
+(Contents, Pull requests and Workflows: read & write). Memento then can:
+
+- clone a repository and **read its code to write tests** (routes, pages,
+  forms, labels),
+- **commit tests on a branch and open a pull request**,
+- add `.github/workflows/memento.yml`, which **runs the suite on every pull
+  request** and posts a results comment. It needs an AI key secret (e.g.
+  `ANTHROPIC_API_KEY`) and a `MEMENTO_BASE_URL` variable pointing at a preview
+  or staging deployment.
 
 ## Bring your own AI
 
@@ -131,9 +155,10 @@ status.
 ## Repository layout
 
 ```
-packages/core     test format, AI layer + agents, browser snapshot, cache, runner
-packages/cli      `memento` command
-apps/desktop      Electron app (macOS / Windows / Linux)
+packages/core     test format, AI layer + agents, browser snapshot, cache, runner, test author
+packages/server   local API server: projects, runs (live events), settings, GitHub
+packages/cli      `memento` command (`memento ui` starts the server + web app)
+apps/web          React web app
 docs/             research notes and roadmap
 ```
 
@@ -142,7 +167,8 @@ docs/             research notes and roadmap
 ```bash
 pnpm install
 pnpm build
-pnpm test          # unit tests + real-Chromium e2e tests with a scripted fake model
+pnpm test          # unit, server/API and real-Chromium e2e tests (scripted fake model)
+pnpm --filter @memento/web dev   # UI dev server; run `memento ui --port 4321` alongside
 ```
 
 If Playwright can't find a browser, set `MEMENTO_BROWSER_PATH` to a

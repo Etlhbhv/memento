@@ -29,7 +29,7 @@ export type ProviderConfig = z.infer<typeof ProviderSchema>;
 /** A model reference is `provider:model-id`, or a list of them to fall back through. */
 const ModelRef = z.union([z.string(), z.array(z.string()).min(1)]);
 
-export const AGENTS = ["locator", "assertion", "extract", "act", "recovery", "review"] as const;
+export const AGENTS = ["locator", "assertion", "extract", "act", "recovery", "review", "author"] as const;
 export type AgentName = (typeof AGENTS)[number];
 
 const AiSchema = z.object({
@@ -43,6 +43,7 @@ const AiSchema = z.object({
       act: ModelRef.optional(),
       recovery: ModelRef.optional(),
       review: ModelRef.optional(),
+      author: ModelRef.optional(),
     })
     .prefault({}),
   /** Send screenshots to models. Turn off for text-only models or to reduce cost. */

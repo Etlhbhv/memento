@@ -4,7 +4,8 @@ import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join, resolve } from "node:path";
 import { Command } from "commander";
-import { AGENTS, BrowserPool, loadConfig, ProviderAIClient, Runner, VERSION } from "@memento/core";
+import { AGENTS, BrowserPool, junitXml, loadConfig, ProviderAIClient, Runner, summaryMarkdown, VERSION } from "@memento/core";
+import { startServer } from "@memento/server";
 import { z } from "zod";
 import { attachConsoleReporter, bold, dim, green, printSummary, red, yellow } from "./reporter.js";
 import { CONFIG_TEMPLATE, EXAMPLE_KNOWLEDGE, EXAMPLE_MODULE, EXAMPLE_TEST } from "./templates.js";
@@ -51,6 +52,8 @@ program
   .option("--retries <n>", "retry failed tests", (v) => parseInt(v, 10))
   .option("--var <kv...>", "set variables: --var EMAIL=a@b.c")
   .option("--json", "print the run summary as JSON")
+  .option("--summary-md <file>", "write a Markdown summary (for PR comments / CI summaries)")
+  .option("--junit <file>", "write a JUnit XML report")
   .option("-q, --quiet", "only print one line per test")
   .action(async (paths: string[], o) => {
     const cfg = loadConfig(o.config, {
@@ -78,6 +81,8 @@ program
         variables,
         signal: ac.signal,
       });
+      if (o.summaryMd) writeFileSync(o.summaryMd, summaryMarkdown(summary));
+      if (o.junit) writeFileSync(o.junit, junitXml(summary));
       if (o.json) console.log(JSON.stringify(summary, null, 2));
       else printSummary(summary);
       process.exitCode = summary.failed > 0 ? 1 : summary.results.length === 0 ? 2 : 0;
@@ -85,6 +90,29 @@ program
       console.error(red((err as Error).message));
       process.exitCode = 2;
     }
+  });
+
+program
+  .command("ui")
+  .description("Open the Memento web app (runs locally; tests run on this computer)")
+  .argument("[project]", "project folder to open (default: current folder if it has memento.config.yaml)")
+  .option("-p, --port <n>", "port (default: 4321, or a free one)", (v) => parseInt(v, 10))
+  .option("--no-open", "don't open the browser")
+  .action(async (project: string | undefined, o: { port?: number; open: boolean }) => {
+    const require = createRequire(import.meta.url);
+    const webDir = join(dirname(require.resolve("@memento/web/package.json")), "dist");
+    const startDir = project ?? (existsSync("memento.config.yaml") ? process.cwd() : undefined);
+    let s;
+    try {
+      s = await startServer({ port: o.port ?? 4321, webDir, project: startDir });
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code !== "EADDRINUSE" || o.port) throw e;
+      s = await startServer({ port: 0, webDir, project: startDir });
+    }
+    console.log(`\n  ${bold("Memento")} is running at ${s.url}\n`);
+    console.log(dim("  This link contains a session token. Press Ctrl+C to stop.\n"));
+    if (o.open) openBrowser(s.url);
+    process.once("SIGINT", () => void s.close().then(() => process.exit(0)));
   });
 
 program
@@ -151,6 +179,12 @@ program
     }
     process.exitCode = ok ? 0 : 1;
   });
+
+function openBrowser(url: string) {
+  const [cmd, args] =
+    process.platform === "darwin" ? ["open", [url]] : process.platform === "win32" ? ["cmd", ["/c", "start", "", url]] : ["xdg-open", [url]];
+  spawn(cmd, args as string[], { stdio: "ignore", detached: true }).on("error", () => {}).unref();
+}
 
 program.parseAsync().catch((e) => {
   console.error(red(e.message));

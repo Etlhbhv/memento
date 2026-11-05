@@ -11,3 +11,6 @@ export { StepExecutor, type StepResult, type StepStatus } from "./runner/executo
 export { Runner, flatten, type RunOptions, type RunSummary, type TestResult, type RunnerEvents } from "./runner/runner.js";
 export { interpolate, evalExpression } from "./runner/script.js";
 export const VERSION = "0.1.0";
+export { authorTests, type AuthorResult, type DraftTest } from "./author/author.js";
+export { buildRepoContext, detectRoutes, type RepoContext } from "./author/repo-context.js";
+export { summaryMarkdown, junitXml } from "./runner/report.js";

@@ -12,11 +12,9 @@
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
-    "desktop": "pnpm --filter @memento/desktop start"
+    "ui": "node packages/cli/dist/bin.js ui"
   },
   "pnpm": {
-    "onlyBuiltDependencies": [
-      "electron"
-    ]
+    "onlyBuiltDependencies": []
   }
 }

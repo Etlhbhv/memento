@@ -41,6 +41,19 @@ export class FakeAI implements AIClient {
         out = { reasoning: "read cart", found: !!m, value: m ? m[1] : null };
         break;
       }
+      case "author": {
+        const yaml = "fileType: memento/test/v1\nid: sign-in\ndescription: Signs in\nurl: /\nsteps:\n  - fill:\n      text: \"{{ env.QA_EMAIL }}\"\n      into: the Email field\n  - click: the Sign in button\n";
+        out = text.includes("failed to parse")
+          ? { fixes: [{ fileName: "broken.test.yaml", yaml: yaml.replace("sign-in", "broken") }] }
+          : {
+              analysis: "A shop with a sign-in form.",
+              tests: [
+                { fileName: "sign-in.test.yaml", yaml, rationale: "Core journey", variables: ["QA_EMAIL"] },
+                { fileName: "broken.test.yaml", yaml: "fileType: memento/test/v1\nid: broken\nsteps:\n  - click: a\n    retries: 1\n", rationale: "x", variables: [] },
+              ],
+            };
+        break;
+      }
       case "recovery": {
         const banner = text.match(/\[(\d+)\] button "Accept all"/);
         out = banner
